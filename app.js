@@ -8,6 +8,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 const csrf = require('csurf');
 
+const localsMiddleware = require('./middlewares/locals');
 const authRoutes = require('./routes/auth');
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({ secret: 'gjis4gilsejo48pfs', resave: false, saveUninitialized: false, store: store }));
 app.use(flash());
 app.use(csrfProtection);
+app.use(localsMiddleware);
 
 app.use('/auth', authRoutes);
 app.use('/', (req, res, next) => {

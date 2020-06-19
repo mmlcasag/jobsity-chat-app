@@ -6,8 +6,7 @@ const User = require('../models/user');
 module.exports.getSignUp = (req, res, next) => {
     res.render('auth/sign-up', {
         title: 'Sign Up',
-        menu: 'Sign Up',
-        csrf: req.csrfToken()
+        menu: 'Sign Up'
     });
 }
 
@@ -17,9 +16,6 @@ module.exports.postSignUp = (req, res, next) => {
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
 
-    console.log(name);
-    console.log(email);
-    
     bcrypt.hash(password, 10)
         .then(hashedPassword => {
             const user = new User({
@@ -50,8 +46,6 @@ module.exports.postSignUp = (req, res, next) => {
 module.exports.getSignIn = (req, res, next) => {
     res.render('auth/sign-in', {
         title: 'Sign In',
-        menu: 'Sign In',
-        csrf: req.csrfToken(),
-        successMessages: req.flash('success')
+        menu: 'Sign In'
     });
 }
