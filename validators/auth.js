@@ -49,7 +49,7 @@ module.exports.postSignInValidator = [
             return User.findOne({ email: value })
                 .then(user => {
                     if (!user) {
-                        return Promise.reject('You have not signed up to our chat app yet');
+                        return Promise.reject('Invalid e-mail or password');
                     }
                 })
         })
