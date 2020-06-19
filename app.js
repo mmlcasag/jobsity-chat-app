@@ -23,7 +23,7 @@ app.use('/', (req, res, next) => {
     });
 });
 
-mongoose.connect('mongodb+srv://admin:admin@mmlcasag-cvtew.mongodb.net/jobsity', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://admin:admin@mmlcasag-cvtew.mongodb.net/jobsity-chat-app', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => {
         app.listen(3060);
     })

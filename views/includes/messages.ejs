@@ -1,0 +1,47 @@
+<% if (typeof validationErrors !== 'undefined') { %>
+    <% if (validationErrors.length > 0) { %>
+        <div class="alert alert-danger">
+            <ul>
+                <% validationErrors.forEach(validationError => { %>
+                    <li><%= validationError.msg %></li>
+                <% }); %>
+            </ul>
+        </div>
+    <% } %>
+<% } %>
+
+<% if (typeof errorMessages !== 'undefined') { %>
+    <% if (errorMessages.length > 0) { %>
+        <div class="alert alert-danger">
+            <ul>
+                <% errorMessages.forEach(errorMessage => { %>
+                    <li><%= errorMessage %></li>
+                <% }); %>
+            </ul>
+        </div>
+    <% } %>
+<% } %>
+
+<% if (typeof successMessages !== 'undefined') { %>
+    <% if (successMessages.length > 0) { %>
+        <div class="alert alert-success">
+            <ul>
+                <% successMessages.forEach(successMessage => { %>
+                    <li><%= successMessage %></li>
+                <% }); %>
+            </ul>
+        </div>
+    <% } %>
+<% } %>
+
+<% if (typeof messages !== 'undefined') { %>
+    <% if (messages.length > 0) { %>
+        <div class="alert alert-info">
+            <ul>
+                <% messages.forEach(message => { %>
+                    <li><%= message %></li>
+                <% }); %>
+            </ul>
+        </div>
+    <% } %>
+<% } %>
