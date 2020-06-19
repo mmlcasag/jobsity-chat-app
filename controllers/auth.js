@@ -6,7 +6,8 @@ const User = require('../models/user');
 module.exports.getSignUp = (req, res, next) => {
     res.render('auth/sign-up', {
         title: 'Sign Up',
-        menu: 'Sign Up'
+        menu: 'Sign Up',
+        csrf: req.csrfToken()
     });
 }
 
@@ -38,6 +39,7 @@ module.exports.postSignUp = (req, res, next) => {
             });
         })
         .then(result => {
+            req.flash('success', 'You have signed up successfully');
             res.redirect('/auth/sign-in');
         })
         .catch(err => {
@@ -48,6 +50,8 @@ module.exports.postSignUp = (req, res, next) => {
 module.exports.getSignIn = (req, res, next) => {
     res.render('auth/sign-in', {
         title: 'Sign In',
-        menu: 'Sign In'
+        menu: 'Sign In',
+        csrf: req.csrfToken(),
+        successMessages: req.flash('success')
     });
 }

@@ -2,6 +2,7 @@
 <%- include('../includes/navigation.ejs') %>
 
 <form class="form" action="/auth/sign-up" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
     <div class="form-group">
         <label for="name">Name:</label>
         <input class="form-control" type="text" name="name" id="name">
