@@ -1,3 +1,17 @@
 <%- include('../includes/header.ejs') %>
 <%- include('../includes/navigation.ejs') %>
+
+<form class="form" action="/auth/sign-in" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <div class="form-group <%= validationErrors.find(error => error.param === 'email') ? 'has-error' : '' %>">
+        <label for="email">E-mail:</label>
+        <input class="form-control" type="email" name="email" id="email" value="<%= form.email %>">
+    </div>
+    <div class="form-group <%= validationErrors.find(error => error.param === 'password') ? 'has-error' : '' %>">
+        <label for="password">Password:</label>
+        <input class="form-control" type="password" name="password" id="password" value="<%= form.password %>">
+    </div>
+    <button type="submit" class="btn btn-default">Sign In</button>
+</form>
+
 <%- include('../includes/footer.ejs') %>

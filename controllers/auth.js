@@ -2,11 +2,19 @@ const bcrypt = require('bcrypt');
 const mailer = require('../config/mailer');
 
 const User = require('../models/user');
+const { validationResult } = require('express-validator');
 
 module.exports.getSignUp = (req, res, next) => {
-    res.render('auth/sign-up', {
+    return res.status(200).render('auth/sign-up', {
         title: 'Sign Up',
-        menu: 'Sign Up'
+        menu: 'Sign Up',
+        form: {
+            name: null,
+            email: null,
+            password: null,
+            confirmPassword: null
+        },
+        validationErrors: []
     });
 }
 
@@ -16,6 +24,22 @@ module.exports.postSignUp = (req, res, next) => {
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
 
+    const validationErrors = validationResult(req).array();
+    
+    if (validationErrors.length > 0) {
+        return res.status(422).render('auth/sign-up', {
+            title: 'Sign Up',
+            menu: 'Sign Up',
+            form: {
+                name: name, 
+                email: (email !== '@' ? email : ''),
+                password: password,
+                confirmPassword: confirmPassword
+            },
+            validationErrors: validationErrors
+        });
+    }
+    
     bcrypt.hash(password, 10)
         .then(hashedPassword => {
             const user = new User({
@@ -35,17 +59,46 @@ module.exports.postSignUp = (req, res, next) => {
             });
         })
         .then(result => {
-            req.flash('success', 'You have signed up successfully');
-            res.redirect('/auth/sign-in');
+            req.flash('success', 'You have successfully signed up. Welcome to Jobsity Chat App!');
+            return res.redirect('/auth/sign-in');
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
 }
 
 module.exports.getSignIn = (req, res, next) => {
-    res.render('auth/sign-in', {
+    return res.render('auth/sign-in', {
         title: 'Sign In',
-        menu: 'Sign In'
+        menu: 'Sign In',
+        form: {
+            email: null,
+            password: null
+        },
+        validationErrors: []
     });
+}
+
+module.exports.postSignIn = (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    
+    const validationErrors = validationResult(req).array();
+    
+    if (validationErrors.length > 0) {
+        return res.status(422).render('auth/sign-in', {
+            title: 'Sign In',
+            menu: 'Sign In',
+            form: {
+                email: (email !== '@' ? email : ''),
+                password: password
+            },
+            validationErrors: validationErrors
+        });
+    }
+    
+    
+
 }

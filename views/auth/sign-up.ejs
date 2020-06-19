@@ -3,23 +3,23 @@
 
 <form class="form" action="/auth/sign-up" method="POST">
     <input type="hidden" name="_csrf" value="<%= csrf %>">
-    <div class="form-group">
+    <div class="form-group <%= validationErrors.find(error => error.param === 'name') ? 'has-error' : '' %>">
         <label for="name">Name:</label>
-        <input class="form-control" type="text" name="name" id="name">
+        <input class="form-control" type="text" name="name" id="name" value="<%= form.name %>">
     </div>
-    <div class="form-group">
+    <div class="form-group <%= validationErrors.find(error => error.param === 'email') ? 'has-error' : '' %>">
         <label for="email">E-mail:</label>
-        <input class="form-control" type="text" name="email" id="email">
+        <input class="form-control" type="email" name="email" id="email" value="<%= form.email %>">
     </div>
-    <div class="form-group">
+    <div class="form-group <%= validationErrors.find(error => error.param === 'password') ? 'has-error' : '' %>">
         <label for="password">Password:</label>
-        <input class="form-control" type="password" name="password" id="password">
+        <input class="form-control" type="password" name="password" id="password" value="<%= form.password %>">
     </div>
-    <div class="form-group">
-        <label for="confirmPassword">Password:</label>
-        <input class="form-control" type="password" name="confirmPassword" id="confirmPassword">
+    <div class="form-group <%= validationErrors.find(error => error.param === 'confirmPassword') ? 'has-error' : '' %>">
+        <label for="confirmPassword">Confirm Password:</label>
+        <input class="form-control" type="password" name="confirmPassword" id="confirmPassword" value="<%= form.confirmPassword %>">
     </div>
-    <button type="submit" class="btn btn-default">Submit</button>
+    <button type="submit" class="btn btn-default">Sign Up</button>
 </form>
 
 <%- include('../includes/footer.ejs') %>
