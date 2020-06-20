@@ -13,7 +13,7 @@ const authRoutes = require('./routes/auth');
 
 const app = express();
 
-const MONGODB_URI = 'mongodb+srv://admin:admin@mmlcasag-cvtew.mongodb.net/jobsity-chat-app';
+const MONGODB_URI = 'mongodb+srv://admin:admin@cluster-dfw5l.mongodb.net/jobsity-chat-app';
 const store = new MongoDBStore({ uri: MONGODB_URI, collection: 'sessions' });
 const csrfProtection = csrf();
 

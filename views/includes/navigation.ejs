@@ -13,8 +13,13 @@
                     <li class="<%= menu === 'Home' ? 'active' : ''%>"><a href="/">Home</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="<%= menu === 'Sign Up' ? 'active' : ''%>"><a href="/auth/sign-up"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li class="<%= menu === 'Sign In' ? 'active' : ''%>"><a href="/auth/sign-in"><span class="glyphicon glyphicon-log-in"></span> Sign In</a></li>
+                    <% if (isSignedIn) { %>           
+                        <li><a href="javascript:;"><span class="glyphicon glyphicon-user"></span> <%= username %></a></li>
+                        <li class="<%= menu === 'Sign Out' ? 'active' : ''%>"><a href="/auth/sign-out"><span class="glyphicon glyphicon-log-out"></span> Sign Out</a></li>
+                    <% } else { %>
+                        <li class="<%= menu === 'Sign Up' ? 'active' : ''%>"><a href="/auth/sign-up"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li class="<%= menu === 'Sign In' ? 'active' : ''%>"><a href="/auth/sign-in"><span class="glyphicon glyphicon-log-in"></span> Sign In</a></li>
+                    <% } %>
                 </ul>
             </div>
         </nav>
