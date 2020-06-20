@@ -96,49 +96,47 @@ module.exports.postSignIn = (req, res, next) => {
         return res.status(422).render('auth/sign-in', params);
     }
     
-    if (validationErrors.length === 0) {
-        User
-        .findOne({ email: email })
-        .then(user => {
-            if (!user) {
-                validationErrors.push({
-                    value: email,
-                    msg: 'Invalid e-mail or password',
-                    param: 'email',
-                    location: 'body',
-                });
-                const params = getSignInViewParams(email, password, validationErrors);
-                return res.status(422).render('auth/sign-in', params);
-            } else {
-                bcrypt
-                .compare(password, user.password)
-                .then(doMatch => {
-                    if (doMatch) {
-                        req.session.user = user;
-                        req.session.isSignedIn = true;
-                        req.session.save(() => {
-                            req.flash('success', 'You have successfully signed in. Welcome!');
-                            return res.redirect('/');
-                        });
-                    } else {
-                        validationErrors.push({
-                            value: password,
-                            msg: 'Invalid e-mail or password',
-                            param: 'password',
-                            location: 'body',
-                        });
-                        const params = getSignInViewParams(email, password, validationErrors);
-                        return res.status(401).render('auth/sign-in', params);
-                    }
-                })
-            }
-        })
-        .catch(err => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        });
-    }
+    User
+    .findOne({ email: email })
+    .then(user => {
+        if (!user) {
+            validationErrors.push({
+                value: email,
+                msg: 'Invalid e-mail or password',
+                param: 'email',
+                location: 'body',
+            });
+            const params = getSignInViewParams(email, password, validationErrors);
+            return res.status(422).render('auth/sign-in', params);
+        } else {
+            bcrypt
+            .compare(password, user.password)
+            .then(doMatch => {
+                if (doMatch) {
+                    req.session.user = user;
+                    req.session.isSignedIn = true;
+                    req.session.save(() => {
+                        req.flash('success', 'You have successfully signed in. Welcome!');
+                        return res.redirect('/');
+                    });
+                } else {
+                    validationErrors.push({
+                        value: password,
+                        msg: 'Invalid e-mail or password',
+                        param: 'password',
+                        location: 'body',
+                    });
+                    const params = getSignInViewParams(email, password, validationErrors);
+                    return res.status(401).render('auth/sign-in', params);
+                }
+            })
+        }
+    })
+    .catch(err => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error);
+    });
 }
 
 const getResetPasswordViewParams = (email = null, validationErrors = []) => {

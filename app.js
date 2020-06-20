@@ -10,6 +10,8 @@ const csrf = require('csurf');
 
 const localsMiddleware = require('./middlewares/locals');
 const authRoutes = require('./routes/auth');
+const homeRoutes = require('./routes/home');
+const errorRoutes = require('./routes/error');
 
 const app = express();
 
@@ -28,10 +30,13 @@ app.use(csrfProtection);
 app.use(localsMiddleware);
 
 app.use('/auth', authRoutes);
-app.use('/', (req, res, next) => {
-    res.render('home', {
-        title: 'Home',
-        menu: 'Home'
+app.use(homeRoutes);
+app.use(errorRoutes);
+app.use((error, req, res, next) => {
+    res.status(500).render('500', {
+        title: '500 Server Side Error',
+        menu: '/500',
+        error: error
     });
 });
 

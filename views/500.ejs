@@ -1,0 +1,14 @@
+<%- include('./includes/header.ejs') %>
+<%- include('./includes/navigation.ejs') %>
+    <p>An error has occurred</p>
+    <% if (error) { %>
+        <p>Send this information to your system administrator:</p>
+        <ul>
+            <li>Error Code: <%= error.httpStatusCode %></li>
+            <li>Error Message: <%= error.message %></li>
+        </ul>
+    <% } else { %>
+        <p>We are working to fix this issue.</p>
+    <% } %>
+    <p>Sorry for the inconvenience.</p>
+<%- include('./includes/footer.ejs') %>
