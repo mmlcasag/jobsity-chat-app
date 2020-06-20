@@ -6,13 +6,18 @@ h1 {
     font-size: 20px;
 }
 
-.form {
+.form,
+.form-inline {
     width: 50rem;
 }
 
+.form-inline #message {
+    width: 36rem;
+}
+
 .messages {
-    width: 500px;
-    height: 300px;
+    width: 490px;
+    height: 100%;
     margin: 20px 0;
     border: 1px solid #ddd;
     border-radius: 5px;

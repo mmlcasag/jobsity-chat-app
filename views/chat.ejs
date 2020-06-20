@@ -4,6 +4,7 @@
 
     <form class="form">
         <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <input type="hidden" name="userid" value="<%= userid %>">
         <input type="hidden" name="username" value="<%= username %>">
         <div class="messages"></div>
         <div class="form-group">
@@ -34,12 +35,14 @@
         
         $('.form').submit(function(event) {
             event.preventDefault();
-            
+
+            var userid = $('input[name=userid]').val();
             var username = $('input[name=username]').val();
             var message = $('input[name=message]').val();
             
-            if (username.length && message.length) {
+            if (userid.length && message.length) {
                 var messageObject = {
+                    userid: userid,
                     username: username,
                     message: message
                 };

@@ -9,6 +9,7 @@ const flash = require('connect-flash');
 const csrf = require('csurf');
 
 const localsMiddleware = require('./middlewares/locals');
+const Post = require('./models/post');
 const authRoutes = require('./routes/auth');
 const homeRoutes = require('./routes/home');
 const errorRoutes = require('./routes/error');
@@ -40,19 +41,37 @@ app.use((error, req, res, next) => {
     });
 });
 
-let messages = [];
-
 mongoose
 .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(result => {      
     const server = app.listen(3060);
-    const io = require('socket.io')(server);
+    const io = require('./config/socket').init(server);
 
     io.on('connection', socket => {
-        socket.emit('previousMessages', messages);
+        Post
+        .find()
+        .populate('author')
+        .limit(50)
+        .sort({ timestamp: 1 })
+        .then(messages => {
+            const chatMessages = messages.map(message => {
+                return { 
+                    userid: message.author._id, 
+                    username: message.author.name,
+                    message: message.message
+                };
+            })
+            socket.emit('previousMessages', chatMessages);
+        });
         
         socket.on('sendMessage', data => {
-            messages.push(data);
+            const post = new Post({
+                author: data.userid,
+                message: data.message,
+                timestamp: Date.now()
+            });
+            post.save();
+            
             socket.broadcast.emit('receivedMessage', data);
         });
     });
