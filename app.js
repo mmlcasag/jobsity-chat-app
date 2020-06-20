@@ -52,7 +52,7 @@ mongoose
         .find()
         .populate('author')
         .limit(50)
-        .sort({ timestamp: 1 })
+        .sort({ timestamp: -1 })
         .then(messages => {
             const chatMessages = messages.map(message => {
                 return { 
@@ -61,7 +61,7 @@ mongoose
                     message: message.message
                 };
             })
-            socket.emit('previousMessages', chatMessages);
+            socket.emit('previousMessages', chatMessages.reverse());
         });
         
         socket.on('sendMessage', data => {

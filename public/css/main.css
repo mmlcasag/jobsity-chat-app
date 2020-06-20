@@ -1,5 +1,5 @@
 main {
-    margin: 3rem 5rem 
+    margin: 3rem 5rem;
 }
 
 h1 {
@@ -8,18 +8,14 @@ h1 {
 
 .form,
 .form-inline {
-    width: 50rem;
-}
-
-.form-inline #message {
-    width: 36rem;
+    width: 100%;
 }
 
 .messages {
-    width: 490px;
+    width: 100%;
     height: 100%;
-    margin: 20px 0;
     border: 1px solid #ddd;
     border-radius: 5px;
-    padding: 20px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1rem;
 }
