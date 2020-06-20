@@ -1,0 +1,57 @@
+<%- include('./includes/header.ejs') %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+<%- include('./includes/navigation.ejs') %>
+
+    <form class="form">
+        <input type="hidden" name="_csrf" value="<%= csrf %>">
+        <input type="hidden" name="username" value="<%= username %>">
+        <div class="messages"></div>
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <input class="form-control" type="text" name="message" id="message" placeholder="Message">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">Send Message</button>
+        </div>
+    </form>
+    
+    <script type="text/javascript">
+        var socket = io('http://localhost:3060');
+
+        function renderMessage(message) {
+            $('.messages').append('<div class="message"><strong>' + message.username + ': </strong>' + message.message + '</div>');
+        }
+        
+        socket.on('receivedMessage', message => {
+            renderMessage(message);
+        });
+
+        socket.on('previousMessages', messages => {
+            for (message of messages) {
+                renderMessage(message);
+            }
+        });
+        
+        $('.form').submit(function(event) {
+            event.preventDefault();
+            
+            var username = $('input[name=username]').val();
+            var message = $('input[name=message]').val();
+            
+            if (username.length && message.length) {
+                var messageObject = {
+                    username: username,
+                    message: message
+                };
+                
+                renderMessage(messageObject);
+
+                socket.emit('sendMessage', messageObject);
+
+                $('input[name=message]').val('');
+                $('input[name=message]').focus();
+            }
+        });
+    </script>
+
+<%- include('./includes/footer.ejs') %>

@@ -11,9 +11,12 @@
                 </div>
                 <ul class="nav navbar-nav">
                     <li class="<%= menu === 'Home' ? 'active' : ''%>"><a href="/">Home</a></li>
+                    <% if (isSignedIn) { %>
+                        <li class="<%= menu === 'Chat' ? 'active' : ''%>"><a href="/chat">Chat</a></li>
+                    <% } %>    
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <% if (isSignedIn) { %>           
+                    <% if (isSignedIn) { %>
                         <li><a href="javascript:;"><span class="glyphicon glyphicon-user"></span> <%= username %></a></li>
                         <li class="<%= menu === 'Sign Out' ? 'active' : ''%>"><a href="/auth/sign-out"><span class="glyphicon glyphicon-log-out"></span> Sign Out</a></li>
                     <% } else { %>

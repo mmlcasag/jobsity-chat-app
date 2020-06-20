@@ -9,3 +9,12 @@ h1 {
 .form {
     width: 50rem;
 }
+
+.messages {
+    width: 500px;
+    height: 300px;
+    margin: 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+}

@@ -40,10 +40,23 @@ app.use((error, req, res, next) => {
     });
 });
 
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(result => {
-        app.listen(3060);
-    })
-    .catch(err => {
-        console.log(err);
+let messages = [];
+
+mongoose
+.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+.then(result => {      
+    const server = app.listen(3060);
+    const io = require('socket.io')(server);
+
+    io.on('connection', socket => {
+        socket.emit('previousMessages', messages);
+        
+        socket.on('sendMessage', data => {
+            messages.push(data);
+            socket.broadcast.emit('receivedMessage', data);
+        });
     });
+})
+.catch(err => {
+    console.log(err);
+});

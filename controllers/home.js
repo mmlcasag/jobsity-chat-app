@@ -4,3 +4,10 @@ module.exports.getHome = (req, res, next) => {
         menu: 'Home'
     });
 }
+
+module.exports.getChat = (req, res, next) => {
+    res.status(200).render('chat', {
+        title: 'Chat',
+        menu: 'Chat'
+    });
+}
