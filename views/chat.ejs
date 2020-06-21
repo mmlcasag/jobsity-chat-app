@@ -24,9 +24,10 @@
         }
         
         socket.on('receivedMessage', message => {
+            console.log(message);
             renderMessage(message);
         });
-
+        
         socket.on('previousMessages', messages => {
             for (message of messages) {
                 renderMessage(message);

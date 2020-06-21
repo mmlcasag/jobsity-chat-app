@@ -7,9 +7,11 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 const csrf = require('csurf');
+const fetch = require('node-fetch');
 
 const localsMiddleware = require('./middlewares/locals');
 const Post = require('./models/post');
+const User = require('./models/user');
 const authRoutes = require('./routes/auth');
 const homeRoutes = require('./routes/home');
 const errorRoutes = require('./routes/error');
@@ -65,14 +67,80 @@ mongoose
         });
         
         socket.on('sendMessage', data => {
-            const post = new Post({
-                author: data.userid,
-                message: data.message,
-                timestamp: Date.now()
-            });
-            post.save();
+            let isSpecialCommand = false;
+            let ticker = "";
             
-            socket.broadcast.emit('receivedMessage', data);
+            // is special command?
+            if (data.message.includes('/stock=')) {
+                const occurrences = data.message.split('=');
+
+                if (occurrences.length === 2 && occurrences[0] === '/stock') {
+                    isSpecialCommand = true;
+                    ticker = occurrences[1];
+                }
+            }
+
+            if (isSpecialCommand) {
+                // get user data
+                User
+                .findOne({ _id: data.userid })
+                .then(user => {
+                    // call the API
+                    fetch('http://localhost:3030/auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: user.email,
+                            password: user.password
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.error) {
+                            throw new Error('There was an error trying the retrieve the stock quotes');
+                        }
+                        // calls the second endpoint
+                        fetch('http://localhost:3030/stock', {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json', 
+                                'Authorization': 'Bearer ' + result.token
+                            },
+                            body: JSON.stringify({
+                                ticker: ticker
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(result => {
+                            if (result.error) {
+                                throw new Error('There was an error trying the retrieve the stock quotes');
+                            }
+                            const text = {
+                                userid: '1',
+                                username: 'Chat Administrator',
+                                message: result.message.symbol + ' quote is $' + result.message.close + ' per share'
+                            };
+                            io.emit('receivedMessage', text);
+                        });
+                    });
+                })
+                .catch(err => {
+                    socket.emit('receivedMessage', {
+                        userid: '1',
+                        username: 'Chat Administrator',
+                        message: 'There was an error trying the retrieve the stock quotes'
+                    });
+                });
+            } else {
+                const post = new Post({
+                    author: data.userid,
+                    message: data.message,
+                    timestamp: Date.now()
+                });
+                post.save();
+                
+                socket.broadcast.emit('receivedMessage', data);
+            }
         });
     });
 })
