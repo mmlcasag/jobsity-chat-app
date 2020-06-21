@@ -81,24 +81,27 @@ mongoose
             }
 
             if (isSpecialCommand) {
-                // get user data
-                User
-                .findOne({ _id: data.userid })
-                .then(user => {
-                    // call the API
-                    fetch('http://localhost:3030/auth', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            email: user.email,
-                            password: user.password
-                        })
+                // calls the API
+                fetch('http://localhost:3030/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client: 'jobsity-chat-app',
+                        secret: 'a5ve7t1we4r6awef4wv36w6vgdt'
                     })
-                    .then(res => res.json())
-                    .then(result => {
-                        if (result.error) {
-                            throw new Error('There was an error trying the retrieve the stock quotes');
-                        }
+                })
+                .then(res => res.json())
+                .then(result => {
+                    // if there was an error
+                    if (result.error) {
+                        // emits it to the user
+                        socket.emit('receivedMessage', {
+                            userid: '1',
+                            username: 'Chat Administrator',
+                            message: 'There was an error trying the retrieve the stock quotes'
+                        });
+                    // if there was not an error
+                    } else {
                         // calls the second endpoint
                         fetch('http://localhost:3030/stock', {
                             method: 'POST',
@@ -112,24 +115,25 @@ mongoose
                         })
                         .then(res => res.json())
                         .then(result => {
+                            // if there was an error
                             if (result.error) {
-                                throw new Error('There was an error trying the retrieve the stock quotes');
+                                // emits it to the user
+                                socket.emit('receivedMessage', {
+                                    userid: '1',
+                                    username: 'Chat Administrator',
+                                    message: 'There was an error trying the retrieve the stock quotes'
+                                });
+                            // if there was not an error
+                            } else {
+                                const text = {
+                                    userid: '1',
+                                    username: 'Chat Administrator',
+                                    message: result.message.symbol + ' quote is $' + result.message.close + ' per share'
+                                };
+                                io.emit('receivedMessage', text);
                             }
-                            const text = {
-                                userid: '1',
-                                username: 'Chat Administrator',
-                                message: result.message.symbol + ' quote is $' + result.message.close + ' per share'
-                            };
-                            io.emit('receivedMessage', text);
                         });
-                    });
-                })
-                .catch(err => {
-                    socket.emit('receivedMessage', {
-                        userid: '1',
-                        username: 'Chat Administrator',
-                        message: 'There was an error trying the retrieve the stock quotes'
-                    });
+                    }
                 });
             } else {
                 const post = new Post({

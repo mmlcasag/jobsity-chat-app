@@ -16,46 +16,6 @@
         </div>
     </form>
     
-    <script type="text/javascript">
-        var socket = io('http://localhost:3060');
-
-        function renderMessage(message) {
-            $('.messages').append('<div class="message"><strong>' + message.username + ': </strong>' + message.message + '</div>');
-        }
-        
-        socket.on('receivedMessage', message => {
-            console.log(message);
-            renderMessage(message);
-        });
-        
-        socket.on('previousMessages', messages => {
-            for (message of messages) {
-                renderMessage(message);
-            }
-        });
-        
-        $('.form').submit(function(event) {
-            event.preventDefault();
-
-            var userid = $('input[name=userid]').val();
-            var username = $('input[name=username]').val();
-            var message = $('input[name=message]').val();
-            
-            if (userid.length && message.length) {
-                var messageObject = {
-                    userid: userid,
-                    username: username,
-                    message: message
-                };
-                
-                renderMessage(messageObject);
-
-                socket.emit('sendMessage', messageObject);
-
-                $('input[name=message]').val('');
-                $('input[name=message]').focus();
-            }
-        });
-    </script>
-
+    <script src="/js/chat.js"></script>
+    
 <%- include('./includes/footer.ejs') %>
